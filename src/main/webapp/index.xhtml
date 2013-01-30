@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html lang="de-DE"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <head>
+        <meta charset="UTF-8" />
+        <title></title>
+    </head>
+    <h:body>
+        <h:panelGroup rendered="#{accountManager.user != null}" layout="block">
+            <h:form>
+                <h:outputText value="#{accountManager.user} eingeloggt"/><br /><br />
+                <h:commandLink action="#{accountManager.logout()}" value="ausloggen" />
+            </h:form>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{accountManager.user == null}" layout="block">
+            <h:form>
+                <h1>Bitte einloggen</h1>
+                <label>Username:</label>
+                <h:inputText id="username" value="#{credentials.username}" label=""/>
+                <br />
+                <label>Passwort:</label>
+                <h:inputSecret id="password" value="#{credentials.password}" />
+                <br />
+                <h:commandButton action="#{accountManager.login()}" />
+            </h:form>
+        </h:panelGroup>
+        <h:link outcome="admin.xhtml" value="zur Administration" />
+    </h:body>
+</html>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+	<groupId>de.dynamicfiles.projects.javaee.cdi.examples</groupId>
+	<artifactId>sessionscopedlogin</artifactId>
+	<version>1.0</version>
+	
+    <packaging>war</packaging>
+	
+    <name>DynamicFiles - Example for CDI-SessionScoped Beans with JSF</name>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Code Coverage with SONAR -->
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis> <!-- Tells Sonar to reuse existing reports, NEEDED when testing with TestNG! -->
+        <sonar.surefire.reportsPath>surefire-reports/junitreports</sonar.surefire.reportsPath> <!-- Tells Sonar where the unit tests execution reports are [ sonar does not like TestNG :( ]-->
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin> <!-- Tells Sonar that the code coverage tool by unit tests is JaCoCo -->
+        <sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath> <!-- Tells Sonar where the code coverage report is -->
+        <!-- /Code Coverage with SONAR -->
+		
+        <openejb.session-context>http</openejb.session-context>
+    </properties>
+
+    <build>
+        <finalName>sessionscopedlogin</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.6.1.201212231917</version>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12.4</version>
+                <configuration>
+                    <includes>
+                        <include>**/*.java</include><!-- dont just run *Test.java-files, which is default for surefire -->
+                    </includes>
+                    <!-- for Arquillian -->
+                    <parallel>none</parallel> <!-- for NOT spawning servers with the same port/port-colision -->
+                    <threadCount>1</threadCount> <!-- for NOT spawning servers with the same port/port-colision -->
+                    <systemPropertyVariables>
+                        <arquillian.launch>tomee</arquillian.launch>
+                        <openejb.deploymentId.format>{appId}/{moduleId}/{ejbName}</openejb.deploymentId.format>
+                        <openejb.session-context>http</openejb.session-context>
+                    </systemPropertyVariables>
+                    <!-- /for Arquillian -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <failOnMissingWebXml>true</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.openejb.maven</groupId>
+                <artifactId>tomee-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <configuration>
+                    <tomeeVersion>1.5.2-SNAPSHOT</tomeeVersion>
+                    <tomeeClassifier>plus</tomeeClassifier>
+                    <quickSession>false</quickSession>
+                    <libs>
+                        <lib>mysql:mysql-connector-java:5.1.21</lib> <!-- see http://tomee.apache.org/tomee-maven-plugin.html -->
+                        <lib>org.eclipse.persistence:eclipselink:2.3.2</lib> <!-- see http://tomee.apache.org/tomee-maven-plugin.html -->
+                    </libs>
+                    <synchronization>
+                        <extensions>
+                            <extension>.class</extension> <!-- if you want to update each time you build with mvn compile -->
+                            <extension>.xhtml</extension> <!-- if you want to update each time you build with mvn compile -->
+                            <extension>.css</extension> <!-- if you want to update each time you build with mvn compile -->
+                        </extensions>
+                    </synchronization>
+                    <reloadOnUpdate>true</reloadOnUpdate>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- javaEE (tomEE) --> 
+        <dependency>
+            <groupId>org.apache.openejb</groupId> <!-- not from javax, because: http://grokbase.com/t/openejb/users/12cea7by1b/javaee-api-incomplete -->
+            <artifactId>javaee-api</artifactId>
+            <version>6.0-4</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- /javaEE (tomEE) -->
+        <!-- javax.faces -->
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-api</artifactId>
+            <version>2.1.8</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-impl</artifactId>
+            <version>2.1.8</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- /javax.faces -->
+
+        <!-- javax.mail -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.5</version>
+        </dependency>
+        <!-- /javax.mail -->
+                
+        <!-- Arquilian -->
+        <dependency>
+            <groupId>org.jboss.arquillian.testng</groupId>
+            <artifactId>arquillian-testng-container</artifactId>
+            <version>1.0.2.Final</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- /Arquilian -->
+		
+        <!-- Arquilian Adapter -->
+        <dependency>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>arquillian-tomee-embedded</artifactId>
+            <version>1.5.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- /Arquilian Adapter -->
+		
+        <!-- ShrinkWrap - Dependency for Arquillian -->
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-api</artifactId>
+            <version>1.1.1-alpha-2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+            <version>2.0.0-alpha-6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+            <version>2.0.0-alpha-6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+            <artifactId>shrinkwrap-descriptors-impl</artifactId>
+            <version>1.1.0-beta-1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- /ShrinkWrap - Dependency for Arquillian -->
+		 
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.21</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>2.3.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.myfaces.tomahawk</groupId>
+            <artifactId>tomahawk20</artifactId>
+            <version>1.1.14</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>jstl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>xmlParserAPIs</artifactId>
+                    <groupId>xml-apis</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+					
+        <!-- TestNG -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8</version>
+            <scope>test</scope>
+        </dependency>    
+        <!-- /TestNG -->
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>apache-snapshot</id>
+            <name>Apache Snapshot Repository</name>
+            <url>https://repository.apache.org/content/groups/snapshots/</url>
+        </repository>
+        <repository>
+            <url>http://download.eclipse.org/rt/eclipselink/maven.repo/</url>
+            <id>eclipselink</id>
+            <layout>default</layout>
+            <name>Repository for library EclipseLink (JPA 2.0)</name>
+        </repository>
+    </repositories>
+</project>
