@@ -19,8 +19,6 @@
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin> <!-- Tells Sonar that the code coverage tool by unit tests is JaCoCo -->
         <sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath> <!-- Tells Sonar where the code coverage report is -->
         <!-- /Code Coverage with SONAR -->
-		
-        <openejb.session-context>http</openejb.session-context>
     </properties>
 
     <build>
@@ -61,7 +59,6 @@
                     <systemPropertyVariables>
                         <arquillian.launch>tomee</arquillian.launch>
                         <openejb.deploymentId.format>{appId}/{moduleId}/{ejbName}</openejb.deploymentId.format>
-                        <openejb.session-context>http</openejb.session-context>
                     </systemPropertyVariables>
                     <!-- /for Arquillian -->
                 </configuration>
@@ -83,7 +80,6 @@
                     <tomeeClassifier>plus</tomeeClassifier>
                     <quickSession>false</quickSession>
                     <libs>
-                        <lib>mysql:mysql-connector-java:5.1.21</lib> <!-- see http://tomee.apache.org/tomee-maven-plugin.html -->
                         <lib>org.eclipse.persistence:eclipselink:2.3.2</lib> <!-- see http://tomee.apache.org/tomee-maven-plugin.html -->
                     </libs>
                     <synchronization>
@@ -121,14 +117,6 @@
             <scope>provided</scope>
         </dependency>
         <!-- /javax.faces -->
-
-        <!-- javax.mail -->
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.5</version>
-        </dependency>
-        <!-- /javax.mail -->
                 
         <!-- Arquilian -->
         <dependency>
@@ -174,13 +162,7 @@
             <scope>test</scope>
         </dependency>
         <!-- /ShrinkWrap - Dependency for Arquillian -->
-		 
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.21</version>
-            <scope>provided</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
