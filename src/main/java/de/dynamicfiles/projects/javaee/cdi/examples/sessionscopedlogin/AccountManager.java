@@ -24,7 +24,6 @@ public class AccountManager implements Serializable {
         return userSession.getUser();
     }
 
-    @Transactional
     public String login() {
         userSession.setUser(userFacade.getUser(credentials.getUsername(), credentials.getPassword()));
         return "index.xhtml";
