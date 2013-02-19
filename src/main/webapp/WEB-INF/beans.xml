@@ -1,5 +1,5 @@
 <beans>
     <interceptors>
-        <class>de.dynamicfiles.projects.javaee.cdi.examples.sessionscopedlogin.TransactionInterceptor</class>
+        <class>de.dynamicfiles.projects.javaee.cdi.examples.sessionscopedlogin.interceptor.TransactionInterceptor</class>
     </interceptors>  
 </beans>

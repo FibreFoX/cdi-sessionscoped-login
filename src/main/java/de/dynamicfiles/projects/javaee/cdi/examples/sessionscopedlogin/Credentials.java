@@ -4,12 +4,16 @@ import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
+/**
+ * Simple form bean for transfering into other cdi beans.
+ *
+ * @author FibreFoX
+ */
 @Named
 @RequestScoped
 class Credentials implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     private String password;
     private String username;
 
@@ -28,5 +32,4 @@ class Credentials implements Serializable {
     public void setUsername(String username) {
         this.username = username;
     }
-    
 }

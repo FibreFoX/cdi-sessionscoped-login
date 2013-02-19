@@ -1,9 +1,8 @@
 package de.dynamicfiles.projects.javaee.cdi.examples.sessionscopedlogin;
 
+import de.dynamicfiles.projects.javaee.cdi.examples.sessionscopedlogin.model.User;
 import java.io.Serializable;
-import javax.enterprise.context.SessionScoped;
 
-@SessionScoped
 public class UserSession implements Serializable {
     private static final long serialVersionUID = 1L;
 
