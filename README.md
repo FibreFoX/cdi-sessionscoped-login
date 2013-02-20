@@ -27,3 +27,4 @@ Features in this project:
 * integration-test and unit-test in the same project
 * jacoco configured for unit-test
 * jacoco configured for integration-test
+* @Inject only (not @EJB !)
