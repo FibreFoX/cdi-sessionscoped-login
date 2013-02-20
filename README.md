@@ -18,9 +18,9 @@ shared by that tests), just look at the pom.xml :)
 Features in this project:
 * maven
 * CDI only beans
-** cdi-producer
-** cdi-interceptors
-** transaction (bmt via annotation)
+  * cdi-producer
+  * cdi-interceptors
+  * transaction (bmt via annotation)
 * testing framework: TestNG
 * JSF 2.0
 * JPA / JTA
